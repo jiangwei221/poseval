@@ -1611,7 +1611,7 @@ def seqtype2idx(seqtype):
     elif seqtype in ["mpiinew"]:
         return 3
     else:
-        print("unknown sequence type:", seqtype)
+        print(("unknown sequence type:", seqtype))
         assert False
 
 
