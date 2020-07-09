@@ -401,7 +401,7 @@ def load_data_dir(argv):
     if pred_dir.endswith('.json'):
       predFilename = pred_dir
     else:
-      predFilename = pred_dir + gtBasename
+      predFilename = os.path.join(pred_dir, gtBasename)
 
     if (not os.path.exists(predFilename)):
         raise IOError('Prediction file ' + predFilename + ' does not exist')
@@ -519,13 +519,16 @@ def assignGTmulti(gtFrames, prFrames, distThresh):
                 # predicted joint in LSP format
                 ppPr = getPointGTbyID(pointsPr, i)
                 if len(ppPr) > 0:
-                    if not ("score" in list(ppPr.keys())):
+                    if "score" in list(ppPr.keys()):
+                        score[ridxPr, i] = ppPr["score"][0]
+                    elif "score" in list(rectPr.keys()):
+                        score[ridxPr, i] = rectPr["score"][0]
+                    else:
                         # use minimum score if predicted score is missing
                         if (imgidx == 0):
                             print(('WARNING: prediction score is missing. Setting fallback score={}'.format(MIN_SCORE)))
                         score[ridxPr, i] = MIN_SCORE
-                    else:
-                        score[ridxPr, i] = ppPr["score"][0]
+                        
                     hasPr[ridxPr, i] = True
 
         if len(prFrames[imgidx]["annorect"]) and len(gtFrames[imgidx]["annorect"]):
